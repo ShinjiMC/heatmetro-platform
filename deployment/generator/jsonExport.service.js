@@ -83,8 +83,8 @@ function buildFullTreeFromMaps(
   layoutMap,
   folderMetricsMap, // (tbl_folder_metrics)
   fileCohesionMap, // (tbl_cohesion)
-  fileCoverageMap, // (AHORA contiene {percentage, sonar_url})
-  fileLintMap, // (NUEVO: contiene {num_issues, issues_url})
+  fileCoverageMap, // ({percentage, sonar_url})
+  fileLintMap, // ({num_issues, issues_url})
   fileCriticalityMap, // (tbl_file_criticality)
   hierarchyMap,
   structMap
@@ -119,20 +119,16 @@ function buildFullTreeFromMaps(
       severities = {
         severity_complexity: folderMetrics.severity_complexity || "LOW",
         severity_coupling: folderMetrics.severity_coupling || "LOW",
-        severity_issues: folderMetrics.severity_issues || "LOW",
         severity_churn: folderMetrics.severity_churn || "LOW",
         severity_authors: folderMetrics.severity_authors || "LOW",
-        severity_halstead: folderMetrics.severity_halstead || "LOW",
         overall_severity: folderMetrics.overall_severity || "LOW",
       };
       debts = {
         debt_cov_overall: folderMetrics.debt_cov_overall,
         debt_cov_complexity: folderMetrics.debt_cov_complexity,
         debt_cov_coupling: folderMetrics.debt_cov_coupling,
-        debt_cov_issues: folderMetrics.debt_cov_issues,
         debt_cov_churn: folderMetrics.debt_cov_churn,
         debt_cov_authors: folderMetrics.debt_cov_authors,
-        debt_cov_halstead: folderMetrics.debt_cov_halstead,
       };
     }
   }
@@ -163,10 +159,8 @@ function buildFullTreeFromMaps(
       severities = {
         severity_complexity: criticalityMetrics.severity_complexity || "LOW",
         severity_coupling: criticalityMetrics.severity_coupling || "LOW",
-        severity_issues: criticalityMetrics.severity_issues || "LOW",
         severity_churn: criticalityMetrics.severity_churn || "LOW",
         severity_authors: criticalityMetrics.severity_authors || "LOW",
-        severity_halstead: criticalityMetrics.severity_halstead || "LOW",
         overall_severity: criticalityMetrics.overall_severity || "LOW",
       };
       debts = {};
@@ -250,10 +244,8 @@ function buildFullTreeFromMaps(
               sonar_url: childNode.sonar_url, // Hereda URL del padre
               severity_complexity: childNode.severity_complexity,
               severity_coupling: childNode.severity_coupling,
-              severity_issues: childNode.severity_issues,
               severity_churn: childNode.severity_churn,
               severity_authors: childNode.severity_authors,
-              severity_halstead: childNode.severity_halstead,
               overall_severity: childNode.overall_severity,
               children: [],
             };
@@ -423,9 +415,6 @@ function generateShaSnapshots(db, allShas) {
     fs.writeFileSync(shaJsonPath, JSON.stringify(shaData));
     fs.writeFileSync(layoutJsonPath, JSON.stringify(nestedCityLayout));
 
-    // NOTA: Se ha eliminado la generación de DETAILS_DIR porque tbl_lint_detail
-    // y tbl_coverage_detail ya no existen. Ahora usamos sonar_url.
-
     generatedCount++;
   }
   console.log(`Generados ${generatedCount} nuevos snapshots de SHA.`);
@@ -499,11 +488,9 @@ function generateFolderTimelines(db) {
       f.debt_cov_overall,
       f.debt_cov_complexity,
       f.debt_cov_coupling,
-      f.debt_cov_issues,
       f.debt_cov_churn,
       f.debt_cov_authors,
-      f.debt_cov_halstead,
-      f.sonar_url,  -- Se añade si se desea usar en el timeline
+      f.sonar_url,
       f.issues_url
     FROM tbl_folder_metrics AS f
     JOIN tbl_sha AS s ON s.sha_id = f.sha_id

@@ -1,4 +1,4 @@
-# HeatMetro: A 3D Code Visualization for Test Debt Analysis in Evolving Systems
+# Prioritizing Multidimensional Test Debt: Context-Aware Code Coverage via 3D Spatial Aggregation
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 

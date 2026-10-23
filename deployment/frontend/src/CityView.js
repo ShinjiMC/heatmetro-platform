@@ -1,5 +1,5 @@
 // src/CityView.js
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Loading from "./Loading";
 import CityPlotter from "./CityPlotter"; // Importa el plotter
@@ -128,6 +128,7 @@ const CityView = ({
   const currentShaDate = manifest.find(
     (m) => m.sha_text === selectedShaInTimeline
   )?.commit_date;
+  const [isTimelineHovered, setIsTimelineHovered] = useState(false);
   const showBackButton =
     (parentStack && parentStack.length > 0) || focusedNodePath;
   return (
@@ -195,14 +196,25 @@ const CityView = ({
 
             {/* Timeline Flotante (Solo visible cuando el panel está CERRADO) */}
             {!sidePanelOpen && (
-              <div className="absolute bottom-0 left-0 right-0 h-40 z-10 pointer-events-none">
-                <div className="relative h-full pointer-events-auto">
+              <div
+                className="absolute bottom-0 left-4 right-64 z-30 flex justify-center pb-0 pointer-events-none transition-all duration-300"
+                onMouseEnter={() => setIsTimelineHovered(true)}
+                onMouseLeave={() => setIsTimelineHovered(false)}
+              >
+                <div
+                  className={`w-full transition-all duration-300 ease-out pointer-events-auto overflow-hidden rounded-t-xl ${
+                    isTimelineHovered
+                      ? "h-48 bg-gray-900/95 backdrop-blur-md border border-b-0 border-gray-700 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
+                      : // REGRESAMOS A h-16
+                        "h-16 bg-gradient-to-t from-gray-900/80 via-gray-900/40 to-transparent"
+                  }`}
+                >
                   <TimelineBarChart
                     manifest={manifest}
                     timelineData={analyticsData.timelineData}
                     selectedSha={selectedShaInTimeline}
                     onShaSelect={onShaChange}
-                    isExpanded={false}
+                    isExpanded={isTimelineHovered}
                   />
                 </div>
               </div>
